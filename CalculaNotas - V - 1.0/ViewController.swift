@@ -91,9 +91,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         errorThirdQuarter.isHidden = true
         
         if((firstQuarter >= 0 && firstQuarter <= 10) && (secondQuarter >= 0 && secondQuarter <= 10) && (thirdQuarter >= 0 && thirdQuarter <= 10)){
-            correctInputNumber(tfQuarter: tfFirstQuarter)
-            correctInputNumber(tfQuarter: tfSecondQuarter)
-            correctInputNumber(tfQuarter: tfThirdQuarter)
             finalGrade = (firstQuarter + secondQuarter + thirdQuarter) / 3.0
             finalGrade = roundDecimalPlaces(value: finalGrade)
             showResults()
