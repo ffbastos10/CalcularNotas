@@ -8,29 +8,23 @@
 import UIKit
 
 class ViewController: UIViewController, UITextFieldDelegate {
-
-    @IBOutlet weak var viFinalResult: UIView!
     
+    @IBOutlet weak var viFinalResult: UIView!
     @IBOutlet weak var tfFirstQuarter: UITextField!
     @IBOutlet weak var tfSecondQuarter: UITextField!
     @IBOutlet weak var tfThirdQuarter: UITextField!
-    
     @IBOutlet weak var errorFirstQuarter: UILabel!
     @IBOutlet weak var errorSecondQuarter: UILabel!
     @IBOutlet weak var errorThirdQuarter: UILabel!
-    
     @IBOutlet weak var lbFinalGrade: UILabel!
     @IBOutlet weak var lbFinalResult: UILabel!
-    
     @IBOutlet weak var buttonCalculate: UIButton!
-    
     @IBOutlet weak var ivFinalResult: UIImageView!
     
-    var finalGrade: Float = 0
+    var student: Student!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         buttonCalculate.layer.cornerRadius = 10
         tfFirstQuarter.layer.cornerRadius = 5
         tfSecondQuarter.layer.cornerRadius = 5
@@ -39,8 +33,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         tfFirstQuarter.delegate = self
         tfSecondQuarter.delegate = self
         tfThirdQuarter.delegate = self
-        
     }
+    
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if(textField == tfFirstQuarter) {
@@ -62,26 +56,26 @@ class ViewController: UIViewController, UITextFieldDelegate {
         tfQuarter.layer.borderWidth = 0.0
         tfQuarter.layer.borderColor = UIColor.gray.cgColor
     }
-
-    func roundDecimalPlaces(value: Float) -> Float {
-        let finalValue = Float(round(10 * value)/10)
-        return  finalValue
-    }
-
+    
     
     @IBAction func calculateGrade(_ sender: Any) {
+        //TODO: Perguntar pro LUCAS
+        student.grades = []
         guard let firstQuarter = Float(tfFirstQuarter.text!) else { errorFirstQuarter.isHidden = false
             return errorInputNumber(tfQuarter: tfFirstQuarter)
         }
         correctInputNumber(tfQuarter: tfFirstQuarter)
         errorFirstQuarter.isHidden = true
-        
+        student.grades.insert(firstQuarter, at: 0)
+//        student.grades[0] = firstQuarter
         guard let secondQuarter = Float(tfSecondQuarter.text!) else {
             errorSecondQuarter.isHidden = false
             return errorInputNumber(tfQuarter: tfSecondQuarter)
         }
         correctInputNumber(tfQuarter: tfSecondQuarter)
         errorSecondQuarter.isHidden = true
+//        student.grades[1] = secondQuarter
+        student.grades.insert(secondQuarter, at: 1)
         
         guard let thirdQuarter = Float(tfThirdQuarter.text!) else {
             errorThirdQuarter.isHidden = false
@@ -89,10 +83,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         correctInputNumber(tfQuarter: tfThirdQuarter)
         errorThirdQuarter.isHidden = true
+        student.grades.insert(thirdQuarter, at: 2)
+//        student.grades[2] = thirdQuarter
         
-        if((firstQuarter >= 0 && firstQuarter <= 10) && (secondQuarter >= 0 && secondQuarter <= 10) && (thirdQuarter >= 0 && thirdQuarter <= 10)){
-            finalGrade = (firstQuarter + secondQuarter + thirdQuarter) / 3.0
-            finalGrade = roundDecimalPlaces(value: finalGrade)
+        if(student.hasAllGrades()){
             showResults()
         }
     }
@@ -102,20 +96,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
         var result: String = ""
         var image: String = ""
         var textColor : UIColor = UIColor.init(red: 0.4, green: 0.7, blue: 0.1, alpha: 1)
-        switch finalGrade {
-            case 0...5:
-                result = "Reprovado"
-                image = "reproved"
-                textColor = UIColor.red
-            case 5.1..<7:
-                result = "Em exame"
-                image = "retake"
-                textColor = UIColor.yellow
-            default:
-                result = "Aprovado"
-                image = "approved"
+        //TODO: Perguntar pro LUCAS
+        switch student.finalGrade{
+        case 0...5:
+            result = "Reprovado"
+            image = "reproved"
+            textColor = UIColor.red
+        case 5.1..<7:
+            result = "Em exame"
+            image = "retake"
+            textColor = UIColor.yellow
+        default:
+            result = "Aprovado"
+            image = "approved"
         }
-        lbFinalGrade.text = String(format: "%.2f",finalGrade)
+        lbFinalGrade.text = String(format: "%.2f",student.finalGrade)
         lbFinalResult.textColor = textColor
         lbFinalResult.text = result
         ivFinalResult.image = UIImage(named: image)
