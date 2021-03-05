@@ -16,11 +16,15 @@ class Student {
             _schoolGrade = min(_schoolGrade, Student.MAX_GRADE)
         }
     }
+    private var _resultSchoolYear : String = "Matriculado"
     var name : String{
         return _name
     }
     var schoolGrade : Int{
         return _schoolGrade
+    }
+    var resultSchoolYear : String {
+        return _resultSchoolYear
     }
     //TODO: Perguntar para o LUCAS
     var grades: [Float] = []
@@ -47,11 +51,26 @@ class Student {
         return isValid.count == 3
     }
     
+    private func resultStudent() -> String{
+        switch finalGrade{
+        case 0...5:
+            return "Reprovado"
+        case 5.1..<7:
+            return "Em exame"
+        default:
+            return  "Aprovado"
+        }
+    }
+    
     func hasAllGrades() -> Bool{
         return grades.count == 3 && validGrades()
     }
     
     func nextGrade(){
-        _schoolGrade += 1
+        _resultSchoolYear = resultStudent()
+        if(_resultSchoolYear == "Aprovado" && schoolGrade == 8){
+            _resultSchoolYear = "Formado"
+        }
+        else {_schoolGrade += 1}
     }
 }

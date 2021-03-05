@@ -12,6 +12,8 @@ class EnrollStudent: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var tfFullName: UITextField!
     @IBOutlet weak var tfSchoolGrade: UITextField!
     @IBOutlet weak var buttonEnroll: UIButton!
+    @IBOutlet weak var errorFullName: UILabel!
+    @IBOutlet weak var errorSchoolGrade: UILabel!
     var student: Student!
     
     override func viewDidLoad() {
@@ -31,7 +33,7 @@ class EnrollStudent: UIViewController, UITextFieldDelegate {
         enroller(textField)
         return textField.resignFirstResponder()
     }
-    //TODO: Perguntar pro LUCAS
+    
     func errorInput (textField : UITextField){
         textField.layer.borderWidth = 1.0
         textField.layer.borderColor = UIColor.red.cgColor
@@ -49,16 +51,25 @@ class EnrollStudent: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func enroller(_ sender: Any) {
-        //TODO: Perguntar pro LUCAS
-        //Contar letras do nome
-        guard let nameStudent = tfFullName.text! as String? else {
+        let nameStudent = tfFullName.text!
+        if(nameStudent.count <= 3){
+            errorFullName.isHidden = false
             return errorInput(textField: tfFullName)
         }
         correctInput(textField: tfFullName)
+        errorFullName.isHidden = true
         
         guard let schoolGrade = Int(tfSchoolGrade.text!) else {
+            errorSchoolGrade.isHidden = false
+            errorSchoolGrade.text = "A série informada deve ser um número"
             return errorInput(textField: tfSchoolGrade)
         }
+        if(schoolGrade > 8){
+            errorSchoolGrade.isHidden = false
+            errorSchoolGrade.text = "A série informada não existe"
+            return errorInput(textField: tfSchoolGrade)
+        }
+        errorSchoolGrade.isHidden = true
         correctInput(textField: tfSchoolGrade)
         student = Student(name: nameStudent, schoolGrade: schoolGrade)
         performSegue(withIdentifier: "EnrollToCalculate", sender: nil)

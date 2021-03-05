@@ -59,22 +59,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func calculateGrade(_ sender: Any) {
-        //TODO: Perguntar pro LUCAS
-        student.grades = []
+        student.grades.removeAll()
         guard let firstQuarter = Float(tfFirstQuarter.text!) else { errorFirstQuarter.isHidden = false
             return errorInputNumber(tfQuarter: tfFirstQuarter)
         }
         correctInputNumber(tfQuarter: tfFirstQuarter)
         errorFirstQuarter.isHidden = true
         student.grades.insert(firstQuarter, at: 0)
-//        student.grades[0] = firstQuarter
         guard let secondQuarter = Float(tfSecondQuarter.text!) else {
             errorSecondQuarter.isHidden = false
             return errorInputNumber(tfQuarter: tfSecondQuarter)
         }
         correctInputNumber(tfQuarter: tfSecondQuarter)
         errorSecondQuarter.isHidden = true
-//        student.grades[1] = secondQuarter
         student.grades.insert(secondQuarter, at: 1)
         
         guard let thirdQuarter = Float(tfThirdQuarter.text!) else {
@@ -84,35 +81,38 @@ class ViewController: UIViewController, UITextFieldDelegate {
         correctInputNumber(tfQuarter: tfThirdQuarter)
         errorThirdQuarter.isHidden = true
         student.grades.insert(thirdQuarter, at: 2)
-//        student.grades[2] = thirdQuarter
         
         if(student.hasAllGrades()){
+            student.nextGrade()
             showResults()
         }
     }
     
     
     func showResults(){
-        var result: String = ""
         var image: String = ""
         var textColor : UIColor = UIColor.init(red: 0.4, green: 0.7, blue: 0.1, alpha: 1)
-        //TODO: Perguntar pro LUCAS
-        switch student.finalGrade{
-        case 0...5:
-            result = "Reprovado"
+        switch student.resultSchoolYear{
+        case "Reprovado":
             image = "reproved"
             textColor = UIColor.red
-        case 5.1..<7:
-            result = "Em exame"
+        case "Em exame":
             image = "retake"
             textColor = UIColor.yellow
+        case "Formado":
+            image = "graduate"
+            textColor = UIColor.black
         default:
-            result = "Aprovado"
             image = "approved"
         }
         lbFinalGrade.text = String(format: "%.2f",student.finalGrade)
         lbFinalResult.textColor = textColor
-        lbFinalResult.text = result
+        if(student.resultSchoolYear == "Aprovado"){
+            lbFinalResult.text = "O Aluno \(student.name) está \(student.resultSchoolYear) para a \(student.schoolGrade) série"
+        }
+        else{
+            lbFinalResult.text = "O Aluno \(student.name) está \(student.resultSchoolYear) "
+        }
         ivFinalResult.image = UIImage(named: image)
         viFinalResult.isHidden = false
     }
